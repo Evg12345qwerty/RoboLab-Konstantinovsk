@@ -1,1 +1,306 @@
 
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>RoboLab Константиновск | R&D центр робототехники</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f5f5f5;
+            color: #333;
+            line-height: 1.6;
+        }
+        .main-wrapper {
+            display: flex;
+            max-width: 1200px;
+            margin: 20px auto;
+            gap: 30px;
+        }
+        .main-content {
+            flex: 3;
+            background: white;
+            padding: 20px;
+            box-shadow: 0 0 20px rgba(0,0,0,0.1);
+            border-radius: 5px;
+        }
+        .right-sidebar {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            gap: 30px;
+        }
+        .sidebar-section {
+            background: white;
+            padding: 20px;
+            box-shadow: 0 0 20px rgba(0,0,0,0.1);
+            border-radius: 5px;
+        }
+        header {
+            text-align: center;
+            padding: 30px 0;
+            border-bottom: 2px solid #4CAF50;
+        }
+        h1 {
+            color: #2c3e50;
+            margin-bottom: 10px;
+        }
+        .tagline {
+            color: #7f8c8d;
+            font-style: italic;
+        }
+        .logo {
+            width: 100px;
+            height: 100px;
+            margin: 0 auto;
+            background-color: #4CAF50;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 24px;
+            font-weight: bold;
+        }
+        section {
+            margin: 30px 0;
+        }
+        h2 {
+            color: #4CAF50;
+            border-left: 4px solid #4CAF50;
+            padding-left: 10px;
+        }
+        h3 {
+            color: #2c3e50;
+            margin-top: 0;
+        }
+        .features {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: space-between;
+        }
+        .feature {
+            width: 48%;
+            margin-bottom: 20px;
+            background: #f9f9f9;
+            padding: 15px;
+            border-radius: 5px;
+        }
+        .contact {
+            text-align: center;
+            background: #2c3e50;
+            color: white;
+            padding: 20px;
+            border-radius: 5px;
+        }
+        a {
+            color: #4CAF50;
+            text-decoration: none;
+        }
+        a:hover {
+            text-decoration: underline;
+        }
+        .btn {
+            display: inline-block;
+            background: #4CAF50;
+            color: white;
+            padding: 10px 20px;
+            border-radius: 5px;
+            margin-top: 10px;
+            transition: all 0.3s;
+        }
+        .btn:hover {
+            background: #3e8e41;
+            text-decoration: none;
+        }
+        .developer {
+            background: #f0f8ff;
+            padding: 15px;
+            border-radius: 5px;
+            margin-bottom: 15px;
+        }
+        .skills {
+            display: flex;
+            flex-wrap: wrap;
+            margin: 10px 0;
+        }
+        .skill {
+            background: #4CAF50;
+            color: white;
+            padding: 5px 10px;
+            border-radius: 3px;
+            margin-right: 5px;
+            margin-bottom: 5px;
+            font-size: 0.8em;
+        }
+        .protocol {
+            margin-bottom: 15px;
+            padding-bottom: 15px;
+            border-bottom: 1px solid #eee;
+        }
+        .protocol:last-child {
+            border-bottom: none;
+        }
+        .metric {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 10px;
+        }
+        .metric-name {
+            font-weight: bold;
+        }
+        .metric-value {
+            color: #4CAF50;
+            font-weight: bold;
+        }
+        @media (max-width: 768px) {
+            .main-wrapper {
+                flex-direction: column;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="main-wrapper">
+        <div class="main-content">
+            <header>
+                <div class="logo">RL</div>
+                <h1>RoboLab Константиновск</h1>
+                <p class="tagline">Исследовательский центр робототехники и AI</p>
+            </header>
+
+            <section>
+                <h2>О нас</h2>
+                <p>Мы - инновационная R&D лаборатория, специализирующаяся на разработке программного обеспечения для робототехнических систем. Наш фокус - создание интеллектуальных алгоритмов управления на Python и JavaScript для перспективных робототехнических платформ.</p>
+                <p>Разрабатываем скрипты и веб-приложения для:</p>
+                <ul>
+                    <li>Управления роботами через браузерные интерфейсы</li>
+                    <li>Мониторинга и администрирования компьютерных сетей</li>
+                    <li>Визуализации данных с датчиков в реальном времени</li>
+                </ul>
+            </section>
+
+            <section>
+                <h2>Направления работы</h2>
+                <div class="features">
+                    <div class="feature">
+                        <h3>Автономные системы</h3>
+                        <p>Разработка алгоритмов навигации и управления для мобильных роботов</p>
+                    </div>
+                    <div class="feature">
+                        <h3>Компьютерное зрение</h3>
+                        <p>Системы распознавания объектов для промышленных применений</p>
+                    </div>
+                    <div class="feature">
+                        <h3>ИИ-манипуляторы</h3>
+                        <p>Алгоритмы точного управления роботизированными захватами</p>
+                    </div>
+                    <div class="feature">
+                        <h3>Симуляторы</h3>
+                        <p>Виртуальные полигоны для тестирования робототехнических систем</p>
+                    </div>
+                    <div class="feature">
+                        <h3>Веб-интерфейсы</h3>
+                        <p>Разработка панелей управления на JavaScript/Python</p>
+                    </div>
+                    <div class="feature">
+                        <h3>Сетевые решения</h3>
+                        <p>Скрипты для мониторинга и управления сетевыми устройствами</p>
+                    </div>
+                </div>
+            </section>
+
+            <section>
+                <h2>Наши проекты</h2>
+                <ul>
+                    <li>Гуманоидный робот для агрокомплексов</li>
+                    <li>Система автономной навигации для складских помещений</li>
+                    <li>ИИ-ассистент для диагностики электроники</li>
+                    <li>Веб-панель управления роботом на React.js</li>
+                    <li>Сетевой мониторинг оборудования на Python</li>
+                </ul>
+            </section>
+
+            <section class="contact">
+                <h2>Свяжитесь с нами</h2>
+                <p>г. Константиновск, Ростовская область</p>
+                <p>Email: <a href="mailto:contact@robokonst.ru" style="color: white;">contact@robokonst.ru</a></p>
+                <p>Телефон: +7 (863) 123-45-67</p>
+                <a href="#" class="btn">Оставить заявку</a>
+            </section>
+        </div>
+
+        <div class="right-sidebar">
+            <div class="sidebar-section">
+                <h2>Наша команда</h2>
+                <div class="developer">
+                    <h3>Алексей Петров</h3>
+                    <p><strong>Fullstack разработчик</strong></p>
+                    <p>Python/JavaScript, 5+ лет опыта</p>
+                    <div class="skills">
+                        <span class="skill">Python</span>
+                        <span class="skill">JavaScript</span>
+                        <span class="skill">Django</span>
+                        <span class="skill">React</span>
+                        <span class="skill">ROS</span>
+                        <span class="skill">WebSockets</span>
+                        <span class="skill">REST API</span>
+                    </div>
+                    <p><strong>Ключевые проекты:</strong></p>
+                    <ul style="margin-top: 5px; padding-left: 20px;">
+                        <li>Система удаленного управления манипулятором</li>
+                        <li>Сетевой сканер оборудования</li>
+                        <li>Визуализатор данных датчиков</li>
+                    </ul>
+                </div>
+            </div>
+
+            <div class="sidebar-section">
+                <h2>Наши исследовательские протоколы</h2>
+                <div class="protocol">
+                    <h3>RLP-001</h3>
+                    <p>Тестирование алгоритмов навигации в условиях помех</p>
+                    <p><strong>Статус:</strong> Активный</p>
+                </div>
+                <div class="protocol">
+                    <h3>RLP-002</h3>
+                    <p>Оптимизация энергопотребления манипуляторов</p>
+                    <p><strong>Статус:</strong> На паузе</p>
+                </div>
+                <div class="protocol">
+                    <h3>RLP-003</h3>
+                    <p>Интеграция ИИ в системы управления</p>
+                    <p><strong>Статус:</strong> В разработке</p>
+                </div>
+            </div>
+
+            <div class="sidebar-section">
+                <h2>Финтех-интеграция</h2>
+                <div class="metric">
+                    <span class="metric-name">Общий бюджет:</span>
+                    <span class="metric-value">5.2M ₽</span>
+                </div>
+                <div class="metric">
+                    <span class="metric-name">Инвестиции:</span>
+                    <span class="metric-value">3.7M ₽</span>
+                </div>
+                <div class="metric">
+                    <span class="metric-name">ROI (12 мес):</span>
+                    <span class="metric-value">27%</span>
+                </div>
+                <div class="metric">
+                    <span class="metric-name">Гранты:</span>
+                    <span class="metric-value">1.5M ₽</span>
+                </div>
+                <div class="metric">
+                    <span class="metric-name">Прогноз выручки:</span>
+                    <span class="metric-value">8.3M ₽</span>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>
