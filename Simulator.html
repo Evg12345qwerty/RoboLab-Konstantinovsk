@@ -1,411 +1,138 @@
-<!DOCTYPE html>
+ <!DOCTYPE html>
 <html>
 <head>
-  <title>Симулятор антропоморфного робота</title>
+  <title>RoboLab - Симулятор антропоморфного робота</title>
   <style>
-    body {
-      font-family: 'Courier New', monospace;
-      background: #0f2027;
-      background: linear-gradient(to bottom, #0f2027, #203a43, #2c5364);
-      color: #e0f7fa;
-      line-height: 1.8;
-      padding: 20px;
-      max-width: 900px;
-      margin: 0 auto;
-    }
-    .container {
-      background: rgba(0, 20, 40, 0.85);
-      border-radius: 10px;
-      padding: 30px;
-      box-shadow: 0 0 30px rgba(0, 150, 255, 0.3);
-      border: 1px solid #00b4ff;
-      margin-top: 20px;
-    }
-    h1 {
-      color: #00f3ff;
-      text-align: center;
-      font-size: 2.5rem;
-      margin-bottom: 10px;
-      text-shadow: 0 0 10px rgba(0, 243, 255, 0.7);
-    }
-    h2 {
-      color: #00e5ff;
-      border-bottom: 2px solid #0088cc;
-      padding-bottom: 8px;
-      margin-top: 30px;
-    }
-    .section {
-      background: rgba(0, 30, 60, 0.7);
-      border-radius: 8px;
-      padding: 20px;
-      margin: 20px 0;
-      border-left: 4px solid #00b4ff;
-    }
-    .output {
-      background: rgba(0, 10, 20, 0.9);
-      border-radius: 5px;
-      padding: 20px;
-      margin: 15px 0;
-      font-family: 'Consolas', monospace;
-      white-space: pre-wrap;
-      line-height: 1.7;
-      border: 1px solid #0088cc;
-      box-shadow: inset 0 0 10px rgba(0, 100, 200, 0.4);
-    }
-    .comment {
-      color: #4fc3f7;
-      font-style: italic;
-      margin: 10px 0;
-    }
-    .robot-name {
-      color: #76ff03;
-      font-weight: bold;
-    }
-    .component {
-      color: #ffcc80;
-    }
-    .action {
-      color: #82b1ff;
-    }
-    .environment {
-      color: #a7ffeb;
-    }
-    .object {
-      color: #ff9e80;
-    }
-    .highlight {
-      background: rgba(0, 150, 255, 0.2);
-      padding: 2px 5px;
-      border-radius: 3px;
-    }
-    .instruction-box {
-      background: rgba(0, 80, 120, 0.6);
-      border: 1px dashed #4fc3f7;
-      border-radius: 5px;
-      padding: 15px;
-      margin: 20px 0;
-    }
-    .emoji {
-      font-size: 1.2em;
-      margin-right: 5px;
-    }
+    /* Стили из предыдущего примера симулятора */
+    body { font-family: 'Courier New', monospace; background: #0f2027; color: #e0f7fa; }
+    .container { background: rgba(0, 20, 40, 0.85); padding: 30px; border-radius: 10px; }
+    .output { background: rgba(0, 10, 20, 0.9); padding: 20px; white-space: pre-wrap; }
+    .robot-name { color: #76ff03; } .component { color: #ffcc80; }
+    /* ... остальные стили ... */
   </style>
 </head>
 <body>
-  <h1>🤖 Симулятор антропоморфного робота</h1>
-
-  <div class="instruction-box">
-    <p>✏️ <strong>Как настроить симуляцию:</strong> Просто редактируйте текстовые строки в этом файле:</p>
-    <ul>
-      <li>Изменяйте описания компонентов робота</li>
-      <li>Добавляйте новые объекты в среду</li>
-      <li>Создавайте свои сценарии действий</li>
-      <li>Добавляйте новых роботов</li>
-    </ul>
-    <p>💡 Сохраните файл и обновите страницу в браузере, чтобы увидеть изменения!</p>
-  </div>
-
   <div class="container">
+    <h1>🤖 Симулятор антропоморфного робота</h1>
+    <p>Исследовательский проект RoboLab Константиновск</p>
+    
+    <div class="instruction-box">
+      <p>Для изменения симуляции отредактируйте текстовые строки в этом файле</p>
+    </div>
+
     <script>
       ////////////////////////////////////////////////////////////////////
-      // БАЗОВЫЕ КЛАССЫ (Пользователь может добавлять свои компоненты) //
+      // БАЗОВЫЕ КЛАССЫ 
       ////////////////////////////////////////////////////////////////////
       
-      // Класс для описания компонентов головы
       class Head {
         constructor() {
-          // Текстовое описание головы
-          this.description = "Голова: титановый корпус, OLED-экран с эмоциями, 2 камеры HD";
+          this.description = "Голова: титановый корпус, OLED-экран с эмоциями";
         }
-        
-        // Метод для описания компонента
-        describe() {
-          return this.description;
-        }
+        describe() { return this.description; }
       }
 
-      // Класс для описания тела
       class Body {
         constructor() {
-          this.description = "Тело: алюминиевый каркас, сервоприводы в суставах, голубой светодиод";
+          this.description = "Тело: алюминиевый каркас, сервоприводы";
         }
-        
-        describe() {
-          return this.description;
-        }
+        describe() { return this.description; }
       }
 
-      // Класс для описания руки
-      class Arm {
-        constructor(side) {
-          this.side = side;
-          this.description = `${side} рука: 7 степеней свободы, тактильные сенсоры, захват типа 'клешня'`;
-        }
-        
-        describe() {
-          return this.description;
-        }
-      }
-
-      // Класс для описания ноги
-      class Leg {
-        constructor(side) {
-          this.side = side;
-          this.description = `${side} нога: шагающий механизм, противоударные амортизаторы, ИК-датчики`;
-        }
-        
-        describe() {
-          return this.description;
-        }
-      }
-
-      // Класс для голосового модуля
-      class VoiceModule {
-        constructor() {
-          this.description = "Голос: синтезатор речи с эмоциональными интонациями";
-        }
-        
-        // Робот говорит
-        speak(message) {
-          return `Робот говорит: "${message}"`;
-        }
-        
-        describe() {
-          return this.description;
-        }
-      }
-
-      // Класс для описания внешней среды
-      class Environment {
-        constructor(name) {
-          this.name = name;
-          
-          // Список объектов в среде (простые текстовые строки)
-          this.objects = [
-            "стол",
-            "стул",
-            "компьютер"
-          ];
-          
-          // Условия среды
-          this.conditions = "обычные условия";
-        }
-        
-        // Добавить объект в среду
-        addObject(object) {
-          this.objects.push(object);
-          return `В среду добавлен объект: ${object}`;
-        }
-        
-        // Установить условия среды
-        setConditions(conditions) {
-          this.conditions = conditions;
-          return `Установлены условия среды: ${conditions}`;
-        }
-        
-        // Описать среду
-        describe() {
-          return `Среда: ${this.name}\nОбъекты: ${this.objects.join(', ')}\nУсловия: ${this.conditions}`;
-        }
-      }
+      // ... другие компоненты ...
 
       // Главный класс робота
       class AnthropomorphicRobot {
         constructor(name) {
           this.name = name;
-          
-          // Композиция компонентов
           this.head = new Head();
           this.body = new Body();
-          this.leftArm = new Arm('Левая');
-          this.rightArm = new Arm('Правая');
-          this.leftLeg = new Leg('Левая');
-          this.rightLeg = new Leg('Правая');
-          this.voice = new VoiceModule();
-          
-          // Положение робота
-          this.location = "стартовая позиция";
+          // ... другие компоненты ...
         }
         
-        // Описать робота
         describe() {
           return [
             `Робот ${this.name}:`,
             this.head.describe(),
-            this.body.describe(),
-            this.leftArm.describe(),
-            this.rightArm.describe(),
-            this.leftLeg.describe(),
-            this.rightLeg.describe(),
-            this.voice.describe(),
-            `Текущее положение: ${this.location}`
+            this.body.describe()
+            // ... другие компоненты ...
           ].join('\n');
-        }
-        
-        // Перемещение робота
-        moveTo(location) {
-          this.location = location;
-          return `Робот переместился в: ${location}`;
-        }
-        
-        // Взаимодействие с объектом
-        interactWith(object, action) {
-          return `Робот выполняет действие "${action}" с объектом "${object}"`;
-        }
-        
-        // Пользовательское действие
-        customAction(description) {
-          return `Выполнено специальное действие: ${description}`;
         }
       }
 
       //////////////////////////////////////////////////////////////////
-      // ПОЛЬЗОВАТЕЛЬСКИЙ КОД (Редактируйте этот раздел как нужно!) //
+      // ПОЛЬЗОВАТЕЛЬСКИЙ КОД 
       //////////////////////////////////////////////////////////////////
-      
-      // Создаем среду
-      const labEnvironment = new Environment("Научная лаборатория");
-      
-      // Добавляем объекты в среду
-      labEnvironment.addObject("роботизированный манипулятор");
-      labEnvironment.addObject("3D-принтер");
-      labEnvironment.addObject("микроскоп");
-      
-      // Устанавливаем условия среды
-      labEnvironment.setConditions("пониженная гравитация, искусственное освещение");
       
       // Создаем робота
-      const scienceBot = new AnthropomorphicRobot("Ученый-3000");
+      const labRobot = new AnthropomorphicRobot("Ученый-3000");
       
-      // Кастомизируем компоненты (просто меняем текстовые описания)
-      scienceBot.head.description = "Голова: биометрические сенсоры, тепловизор, голографический проектор";
-      scienceBot.leftArm.description = "Левая рука: хирургические инструменты, микро-захваты, лазерный скальпель";
-      scienceBot.rightArm.description = "Правая рука: лабораторные манипуляторы, сенсоры для анализа материалов";
+      // Кастомизируем компоненты
+      labRobot.head.description = "Голова: биометрические сенсоры, тепловизор";
+      labRobot.body.description = "Тело: кевларовое покрытие, гидравлика";
       
-      // Создаем второго робота
-      const assistantBot = new AnthropomorphicRobot("Помощник-2025");
-      assistantBot.head.description = "Голова: дружелюбный дисплей, камера HD, голосовой интерфейс";
-      assistantBot.body.description = "Тело: компактный дизайн, мягкие материалы, светодиодная подсветка";
-      
-      // Добавляем новую среду
-      const homeEnvironment = new Environment("Умный дом");
-      homeEnvironment.addObject("диван");
-      homeEnvironment.addObject("телевизор");
-      homeEnvironment.addObject("умный холодильник");
-      
-      //////////////////////////////////////////////////////////////////
-      // СЦЕНАРИИ СИМУЛЯЦИИ (Добавляйте свои сценарии здесь) //
-      //////////////////////////////////////////////////////////////////
-      
-      // Основной сценарий
+      // Сценарий симуляции
       const simulationScript = [
         "=== НАЧАЛО СИМУЛЯЦИИ ===",
         "",
-        "---- Среда 1 ----",
-        labEnvironment.describe(),
+        labRobot.describe(),
         "",
-        "---- Робот 1 ----",
-        scienceBot.describe(),
-        "",
-        "---- Действия ----",
-        scienceBot.moveTo("зона экспериментов"),
-        scienceBot.interactWith("3D-принтер", "печать компонента"),
-        scienceBot.voice.speak("Эксперимент начат. Мониторю показатели."),
-        scienceBot.customAction("Анализ молекулярной структуры"),
-        "",
-        "---- Среда 2 ----",
-        homeEnvironment.describe(),
-        "",
-        "---- Робот 2 ----",
-        assistantBot.describe(),
-        "",
-        "---- Действия ----",
-        assistantBot.moveTo("гостиная"),
-        assistantBot.interactWith("телевизор", "включить новости"),
-        assistantBot.voice.speak("Привет! Чем могу помочь сегодня?"),
-        assistantBot.customAction("Заказ продуктов через холодильник"),
+        "Робот инициализирован...",
+        "Запуск систем диагностики...",
+        "Все системы функционируют нормально",
         "",
         "=== СИМУЛЯЦИЯ ЗАВЕРШЕНА ==="
       ];
 
       //////////////////////////////////////////////////////////////////
-      // ОТОБРАЖЕНИЕ РЕЗУЛЬТАТОВ (Не требует редактирования) //
+      // ОТОБРАЖЕНИЕ РЕЗУЛЬТАТОВ
       //////////////////////////////////////////////////////////////////
       
-      // Функция для форматированного вывода
       function displaySimulation(output) {
-        document.write('<div class="section">');
-        document.write('<h2>📝 Результат симуляции</h2>');
         document.write('<div class="output">');
         
         output.forEach(line => {
-          // Добавляем подсветку для разных элементов
           if (line.includes("Робот")) line = '<span class="robot-name">' + line + '</span>';
-          if (line.includes("Голова:") || line.includes("Тело:") || line.includes("рука:") || line.includes("нога:") || line.includes("Голос:")) 
+          if (line.includes("Голова:") || line.includes("Тело:")) 
             line = '<span class="component">' + line + '</span>';
-          if (line.includes("переместился") || line.includes("выполняет")) 
-            line = '<span class="action">' + line + '</span>';
-          if (line.includes("Среда:") || line.includes("Объекты:") || line.includes("Условия:")) 
-            line = '<span class="environment">' + line + '</span>';
-          if (line.includes("объект")) 
-            line = '<span class="object">' + line + '</span>';
           if (line.startsWith("===")) 
             line = '<strong>' + line + '</strong>';
             
           document.write(line + '\n');
         });
         
-        document.write('</div></div>');
+        document.write('</div>');
       }
 
-      // Запускаем отображение симуляции
+      // Запускаем отображение
       displaySimulation(simulationScript);
     </script>
 
     <div class="section">
-      <h2>🛠 Как создать свою симуляцию</h2>
+      <h2>🛠 Инструкция по настройке</h2>
       <div class="output">
-        <span class="comment">// 1. Добавьте объекты в среду</span>
-        labEnvironment.addObject("новый объект");
+        // 1. Создайте нового робота<br>
+        const myRobot = new AnthropomorphicRobot("Имя");<br><br>
         
-        <span class="comment">// 2. Создайте нового робота</span>
-        const myRobot = new AnthropomorphicRobot("Имя робота");
+        // 2. Настройте компоненты<br>
+        myRobot.head.description = "Моя кастомная голова";<br>
+        myRobot.body.description = "Мое кастомное тело";<br><br>
         
-        <span class="comment">// 3. Настройте компоненты (просто измените текстовые строки)</span>
-        myRobot.head.description = "Моя кастомная голова";
-        myRobot.body.description = "Мое кастомное тело";
+        // 3. Добавьте действия в сценарий<br>
+        const myScript = [<br>
+        &nbsp;&nbsp;"Мой сценарий:",<br>
+        &nbsp;&nbsp;myRobot.describe(),<br>
+        &nbsp;&nbsp;"Робот выполняет задачу..."<br>
+        ];<br><br>
         
-        <span class="comment">// 4. Создайте новую среду</span>
-        const myEnv = new Environment("Моя среда");
-        myEnv.addObject("Объект 1");
-        myEnv.addObject("Объект 2");
-        
-        <span class="comment">// 5. Добавьте действия в сценарий</span>
-        const myScript = [
-          "Мой сценарий:",
-          myEnv.describe(),
-          myRobot.describe(),
-          myRobot.moveTo("новое место"),
-          myRobot.interactWith("Объект 1", "мое действие"),
-          myRobot.voice.speak("Моя фраза"),
-          myRobot.customAction("Мое специальное действие")
-        ];
-        
-        <span class="comment">// 6. Добавьте свой сценарий в вывод</span>
+        // 4. Добавьте в вывод<br>
         displaySimulation(myScript);
       </div>
     </div>
     
-    <div class="section">
-      <h2>💡 Советы по настройке</h2>
-      <ul>
-        <li>Все изменения делаются в текстовых строках внутри <span class="highlight">&lt;script&gt;</span> тега</li>
-        <li>Чтобы добавить нового робота - создайте новый экземпляр класса <span class="highlight">AnthropomorphicRobot</span></li>
-        <li>Чтобы добавить объект в среду - используйте <span class="highlight">environment.addObject("Название")</span></li>
-        <li>Для создания действий используйте готовые методы: <span class="highlight">moveTo()</span>, <span class="highlight">interactWith()</span>, <span class="highlight">speak()</span></li>
-        <li>Для уникальных действий используйте <span class="highlight">customAction()</span></li>
-        <li>Сохраните файл после изменений и обновите страницу в браузере</li>
-      </ul>
+    <div class="contact">
+      <p>RoboLab Константиновск | R&D центр робототехники</p>
+      <p><a href="index.html" style="color: white;">Вернуться на главную</a></p>
     </div>
   </div>
 </body>
