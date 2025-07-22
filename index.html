@@ -186,6 +186,7 @@
                 <ul>
                     <li>Управления роботами через браузерные интерфейсы</li>
                     <li>Мониторинга и администрирования компьютерных сетей</li>
+                    <li><a href="simulator.html">Веб-симулятор антропоморфного робота</a></li>
                     <li>Визуализации данных с датчиков в реальном времени</li>
                 </ul>
             </section>
@@ -272,10 +273,46 @@
                     <p><strong>Статус:</strong> Активный</p>
                 </div>
                 <div class="protocol">
-                    <h3>RLP-002</h3>
-                    <p>Оптимизация энергопотребления манипуляторов</p>
-                    <p><strong>Статус:</strong> На паузе</p>
-                </div>
+    <h3>RLP-005</h3>
+    <p><strong>Объект исследования:</strong> ПК, веб-браузер</p>
+    <p><strong>Предмет исследования:</strong> Абстрактная модель антропоморфного робота</p>
+    <p><strong>Цель:</strong> Исследование объектной композиции и поведения робота в виртуальной среде</p>
+    
+    <div class="math-section">
+        <p><strong>Методология:</strong></p>
+        <p>Использована объектная композиция для моделирования робота:</p>
+        \[
+        \text{Робот} = \{\text{Голова}, \text{Тело}, \text{Руки}, \text{Ноги}, \text{Голос}\}
+        \]
+        <p>Каждый компонент представлен независимым классом с методом <code>describe()</code>.</p>
+    </div>
+
+    <div class="math-section">
+        <p><strong>Пример кода:</strong></p>
+        <pre>class Arm {
+  constructor(side) {
+    this.side = side;
+    this.description = `${side} рука: 7 степеней свободы`;
+  }
+  
+  describe() {
+    return this.description;
+  }
+}</pre>
+    </div>
+
+    <p><strong>Результаты:</strong></p>
+    <ul>
+        <li>Реализована гибкая система композиции компонентов</li>
+        <li>Доказана возможность простой кастомизации через текстовые строки</li>
+        <li>Создан веб-интерфейс для визуализации модели</li>
+    </ul>
+    
+    <p><strong>Статус:</strong> Завершен</p>
+    <p><strong>Дата:</strong> 15.05.2024</p>
+    <p><a href="simulator.html" class="btn">Запустить симуляцию</a></p>
+</div>
+                
                 <div class="protocol">
                     <h3>RLP-003</h3>
                     <p>Интеграция ИИ в системы управления</p>
@@ -355,8 +392,16 @@
                     <p><strong>Статус:</strong> Завершен</p>
                     <p><strong>Дата:</strong> 25.08.2023</p>
                 </div>
-            </div>
-
+           </div>
+.         <div class="contact">
+    <p>GitHub проекта: 
+        <a href="https://github.com/Evg12345qwerty/RoboLab-Konstantinovsk.git" 
+           style="color: white;">
+            https://github.com/Evg12345qwerty/RoboLab-Konstantinovsk.git
+        </a>
+    </p>
+    <!-- остальные контакты -->
+</div>
             <div class="sidebar-section">
                 <h2>Финтех-интеграция</h2>
                 <div class="metric">
