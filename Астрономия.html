@@ -1,0 +1,1123 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Космический портал | Астрономия и космонавтика</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700&family=Space+Mono:wght@400;700&display=swap">
+    <style>
+        /* Глобальные стили */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --primary: #0b0d21;
+            --secondary: #1a1f3b;
+            --accent: #5d3fd3;
+            --light: #8a8dbb;
+            --dark: #060714;
+            --star: #ffd700;
+            --nebula: #9d4edd;
+            --planet: #4361ee;
+        }
+
+        body {
+            background: linear-gradient(135deg, var(--dark) 0%, var(--primary) 100%);
+            color: #e0e0ff;
+            font-family: 'Space Mono', monospace;
+            line-height: 1.6;
+            overflow-x: hidden;
+            min-height: 100vh;
+            background-attachment: fixed;
+            background-image: 
+                radial-gradient(circle at 10% 20%, rgba(157, 78, 221, 0.1) 0%, transparent 20%),
+                radial-gradient(circle at 90% 80%, rgba(67, 97, 238, 0.1) 0%, transparent 20%);
+        }
+
+        .container {
+            width: 90%;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 15px;
+        }
+
+        section {
+            padding: 80px 0;
+        }
+
+        h1, h2, h3, h4 {
+            margin-bottom: 20px;
+            color: white;
+            font-family: 'Orbitron', sans-serif;
+            font-weight: 700;
+            letter-spacing: 1px;
+        }
+
+        h1 {
+            font-size: 3.5rem;
+            text-shadow: 0 0 10px rgba(93, 63, 211, 0.7);
+        }
+
+        h2 {
+            font-size: 2.8rem;
+            text-align: center;
+            position: relative;
+            padding-bottom: 15px;
+            margin-bottom: 50px;
+        }
+
+        h2:after {
+            content: "";
+            position: absolute;
+            bottom: 0;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 150px;
+            height: 4px;
+            background: linear-gradient(90deg, transparent, var(--accent), transparent);
+        }
+
+        p {
+            margin-bottom: 15px;
+            font-size: 1.1rem;
+        }
+
+        .btn {
+            display: inline-block;
+            background: var(--accent);
+            color: white;
+            padding: 12px 30px;
+            border-radius: 30px;
+            text-decoration: none;
+            font-weight: bold;
+            transition: all 0.3s;
+            border: 2px solid var(--accent);
+            cursor: pointer;
+            font-size: 1.1rem;
+            font-family: 'Orbitron', sans-serif;
+            letter-spacing: 1px;
+            text-transform: uppercase;
+        }
+
+        .btn:hover {
+            background: transparent;
+            color: var(--accent);
+            transform: translateY(-3px);
+            box-shadow: 0 5px 15px rgba(93, 63, 211, 0.4);
+        }
+
+        .btn-outline {
+            background: transparent;
+            color: var(--accent);
+        }
+
+        .btn-outline:hover {
+            background: var(--accent);
+            color: white;
+        }
+
+        /* Шапка сайта */
+        header {
+            background: rgba(11, 13, 33, 0.95);
+            color: white;
+            padding: 20px 0;
+            position: fixed;
+            width: 100%;
+            top: 0;
+            z-index: 1000;
+            box-shadow: 0 2px 20px rgba(0, 0, 0, 0.5);
+            backdrop-filter: blur(10px);
+            border-bottom: 1px solid rgba(93, 63, 211, 0.3);
+        }
+
+        .header-container {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo {
+            font-size: 1.8rem;
+            font-weight: bold;
+            font-family: 'Orbitron', sans-serif;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .logo span {
+            color: var(--accent);
+        }
+
+        .logo i {
+            color: var(--star);
+            animation: pulse 2s infinite;
+        }
+
+        nav ul {
+            display: flex;
+            list-style: none;
+        }
+
+        nav ul li {
+            margin-left: 25px;
+        }
+
+        nav ul li a {
+            color: #b9b9f3;
+            text-decoration: none;
+            font-size: 1.1rem;
+            transition: color 0.3s;
+            position: relative;
+            font-family: 'Orbitron', sans-serif;
+        }
+
+        nav ul li a:after {
+            content: '';
+            position: absolute;
+            bottom: -5px;
+            left: 0;
+            width: 0;
+            height: 2px;
+            background: var(--accent);
+            transition: width 0.3s;
+        }
+
+        nav ul li a:hover {
+            color: white;
+        }
+
+        nav ul li a:hover:after {
+            width: 100%;
+        }
+
+        .menu-toggle {
+            display: none;
+            cursor: pointer;
+            font-size: 1.5rem;
+            color: var(--accent);
+        }
+
+        /* Герой-секция */
+        .hero {
+            text-align: center;
+            padding: 180px 0 100px;
+            margin-top: 60px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .hero-content {
+            max-width: 800px;
+            margin: 0 auto;
+            position: relative;
+            z-index: 2;
+        }
+
+        .hero p {
+            font-size: 1.5rem;
+            margin: 0 auto 30px;
+            color: #c5c5ff;
+        }
+
+        .hero-btns {
+            display: flex;
+            justify-content: center;
+            gap: 15px;
+            margin-top: 40px;
+        }
+
+        .stars-bg {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+        }
+
+        .star {
+            position: absolute;
+            background: white;
+            border-radius: 50%;
+            box-shadow: 0 0 10px white;
+            animation: twinkle var(--duration) infinite ease-in-out;
+        }
+
+        @keyframes twinkle {
+            0%, 100% { opacity: 0.2; }
+            50% { opacity: 1; }
+        }
+
+        /* Секция "О портале" */
+        .about {
+            background: rgba(26, 31, 59, 0.6);
+            backdrop-filter: blur(10px);
+            border-radius: 20px;
+            padding: 40px;
+            margin: 40px 0;
+            border: 1px solid rgba(93, 63, 211, 0.3);
+        }
+
+        .features {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 30px;
+            margin-top: 50px;
+        }
+
+        .feature-card {
+            background: rgba(11, 13, 33, 0.7);
+            border-radius: 15px;
+            padding: 30px;
+            text-align: center;
+            transition: all 0.3s;
+            border: 1px solid rgba(93, 63, 211, 0.2);
+        }
+
+        .feature-card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 10px 30px rgba(93, 63, 211, 0.2);
+            border-color: var(--accent);
+        }
+
+        .feature-icon {
+            font-size: 3rem;
+            margin-bottom: 20px;
+            color: var(--accent);
+        }
+
+        /* Секция фотогалереи */
+        .gallery {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 25px;
+            margin-top: 30px;
+        }
+
+        .photo-card {
+            background: rgba(11, 13, 33, 0.7);
+            border-radius: 15px;
+            overflow: hidden;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+            transition: all 0.3s;
+            border: 1px solid rgba(93, 63, 211, 0.2);
+        }
+
+        .photo-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 25px rgba(93, 63, 211, 0.3);
+        }
+
+        .photo-image {
+            height: 250px;
+            background-size: cover;
+            background-position: center;
+        }
+
+        .photo-info {
+            padding: 20px;
+        }
+
+        .photo-title {
+            font-size: 1.4rem;
+            margin-bottom: 10px;
+            color: white;
+        }
+
+        .photo-author {
+            color: var(--light);
+            font-size: 0.9rem;
+            margin-bottom: 15px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        /* Секция статей */
+        .articles-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+            gap: 30px;
+            margin-top: 40px;
+        }
+
+        .article-card {
+            background: rgba(11, 13, 33, 0.7);
+            border-radius: 15px;
+            overflow: hidden;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+            transition: all 0.3s;
+            border: 1px solid rgba(93, 63, 211, 0.2);
+        }
+
+        .article-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 25px rgba(93, 63, 211, 0.3);
+        }
+
+        .article-image {
+            height: 200px;
+            background-size: cover;
+            background-position: center;
+        }
+
+        .article-content {
+            padding: 25px;
+        }
+
+        .article-title {
+            font-size: 1.5rem;
+            margin-bottom: 15px;
+            color: white;
+        }
+
+        .article-excerpt {
+            color: #b9b9f3;
+            margin-bottom: 20px;
+        }
+
+        .article-meta {
+            display: flex;
+            justify-content: space-between;
+            color: var(--light);
+            font-size: 0.9rem;
+            border-top: 1px solid rgba(93, 63, 211, 0.2);
+            padding-top: 15px;
+        }
+
+        /* Формы загрузки */
+        .upload-section {
+            background: rgba(26, 31, 59, 0.6);
+            backdrop-filter: blur(10px);
+            border-radius: 20px;
+            padding: 40px;
+            margin: 40px 0;
+            border: 1px solid rgba(93, 63, 211, 0.3);
+        }
+
+        .form-group {
+            margin-bottom: 25px;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            color: #b9b9f3;
+        }
+
+        .form-control {
+            width: 100%;
+            padding: 15px;
+            border-radius: 10px;
+            border: 1px solid rgba(93, 63, 211, 0.3);
+            background: rgba(11, 13, 33, 0.7);
+            color: white;
+            font-size: 1rem;
+            transition: all 0.3s;
+        }
+
+        .form-control:focus {
+            outline: none;
+            border-color: var(--accent);
+            box-shadow: 0 0 0 3px rgba(93, 63, 211, 0.3);
+        }
+
+        textarea.form-control {
+            min-height: 150px;
+            resize: vertical;
+        }
+
+        .form-row {
+            display: flex;
+            gap: 20px;
+            margin-bottom: 25px;
+        }
+
+        .form-row .form-group {
+            flex: 1;
+            margin-bottom: 0;
+        }
+
+        /* Подвал сайта */
+        footer {
+            background: rgba(6, 7, 20, 0.95);
+            color: white;
+            padding: 60px 0 20px;
+            text-align: center;
+            border-top: 1px solid rgba(93, 63, 211, 0.3);
+        }
+
+        .social-links {
+            display: flex;
+            justify-content: center;
+            gap: 20px;
+            margin: 30px 0;
+        }
+
+        .social-links a {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            background: rgba(93, 63, 211, 0.2);
+            color: #b9b9f3;
+            font-size: 1.5rem;
+            transition: all 0.3s;
+        }
+
+        .social-links a:hover {
+            background: var(--accent);
+            color: white;
+            transform: translateY(-5px);
+        }
+
+        .copyright {
+            padding-top: 20px;
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+            margin-top: 20px;
+            color: var(--light);
+        }
+
+        /* Анимации */
+        @keyframes pulse {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.1); }
+            100% { transform: scale(1); }
+        }
+
+        @keyframes float {
+            0% { transform: translateY(0px); }
+            50% { transform: translateY(-15px); }
+            100% { transform: translateY(0px); }
+        }
+
+        /* Адаптивность */
+        @media (max-width: 992px) {
+            h1 {
+                font-size: 3rem;
+            }
+            
+            h2 {
+                font-size: 2.3rem;
+            }
+            
+            .gallery, .articles-grid {
+                grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            }
+        }
+
+        @media (max-width: 768px) {
+            .menu-toggle {
+                display: block;
+            }
+            
+            nav ul {
+                display: none;
+                position: absolute;
+                top: 70px;
+                left: 0;
+                width: 100%;
+                background: rgba(11, 13, 33, 0.95);
+                flex-direction: column;
+                padding: 20px 0;
+                box-shadow: 0 5px 10px rgba(0, 0, 0, 0.5);
+                backdrop-filter: blur(10px);
+            }
+            
+            nav ul.show {
+                display: flex;
+            }
+            
+            nav ul li {
+                margin: 15px 0;
+                text-align: center;
+            }
+            
+            h1 {
+                font-size: 2.5rem;
+            }
+            
+            h2 {
+                font-size: 2rem;
+            }
+            
+            .hero {
+                padding: 150px 0 80px;
+            }
+            
+            .hero-btns {
+                flex-direction: column;
+                align-items: center;
+            }
+            
+            .form-row {
+                flex-direction: column;
+                gap: 0;
+            }
+        }
+        
+        /* Вкладки */
+        .tabs {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 30px;
+            flex-wrap: wrap;
+        }
+        
+        .tab-btn {
+            padding: 12px 25px;
+            background: rgba(11, 13, 33, 0.7);
+            border: 1px solid rgba(93, 63, 211, 0.3);
+            color: #b9b9f3;
+            border-radius: 30px;
+            cursor: pointer;
+            transition: all 0.3s;
+            font-family: 'Orbitron', sans-serif;
+        }
+        
+        .tab-btn.active, .tab-btn:hover {
+            background: var(--accent);
+            color: white;
+            border-color: var(--accent);
+        }
+        
+        .tab-content {
+            display: none;
+        }
+        
+        .tab-content.active {
+            display: block;
+            animation: fadeIn 0.5s ease;
+        }
+        
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        
+        /* Модальные окна */
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(6, 7, 20, 0.9);
+            z-index: 2000;
+            align-items: center;
+            justify-content: center;
+            backdrop-filter: blur(5px);
+        }
+        
+        .modal-content {
+            background: var(--primary);
+            border-radius: 20px;
+            width: 90%;
+            max-width: 600px;
+            padding: 40px;
+            position: relative;
+            border: 1px solid var(--accent);
+            box-shadow: 0 0 50px rgba(93, 63, 211, 0.5);
+        }
+        
+        .close-modal {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            font-size: 1.8rem;
+            cursor: pointer;
+            color: var(--light);
+            transition: color 0.3s;
+        }
+        
+        .close-modal:hover {
+            color: var(--accent);
+        }
+        
+        .modal-title {
+            margin-bottom: 25px;
+            text-align: center;
+            color: white;
+        }
+    </style>
+</head>
+<body>
+    <!-- Шапка сайта -->
+    <header>
+        <div class="container header-container">
+            <div class="logo">
+                <i class="fas fa-rocket"></i>
+                <span>Космический портал</span>
+            </div>
+            <div class="menu-toggle">
+                <i class="fas fa-bars"></i>
+            </div>
+            <nav>
+                <ul>
+                    <li><a href="#hero">Главная</a></li>
+                    <li><a href="#gallery">Фотогалерея</a></li>
+                    <li><a href="#articles">Статьи</a></li>
+                    <li><a href="#upload">Загрузить</a></li>
+                    <li><a href="#contact">Контакты</a></li>
+                </ul>
+            </nav>
+        </div>
+    </header>
+
+    <!-- Герой-секция -->
+    <section id="hero" class="hero">
+        <div class="stars-bg" id="stars"></div>
+        <div class="container">
+            <div class="hero-content">
+                <h1>Исследуйте Вселенную вместе с нами</h1>
+                <p>Добро пожаловать на крупнейший портал по астрономии и космонавтике. Откройте для себя тайны космоса, изучайте последние открытия и делитесь своими наблюдениями.</p>
+                <div class="hero-btns">
+                    <a href="#gallery" class="btn">Смотреть фотографии</a>
+                    <a href="#articles" class="btn btn-outline">Читать статьи</a>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Секция "О портале" -->
+    <section id="about">
+        <div class="container">
+            <h2>О нашем портале</h2>
+            <div class="about">
+                <p>Космический портал - это сообщество энтузиастов астрономии и космонавтики, где каждый может поделиться своими знаниями, фотографиями и исследованиями. Мы стремимся сделать науку о космосе доступной для всех.</p>
+                <p>На нашем портале вы можете:</p>
+                
+                <div class="features">
+                    <div class="feature-card">
+                        <div class="feature-icon">
+                            <i class="fas fa-camera"></i>
+                        </div>
+                        <h3>Загружать фотографии</h3>
+                        <p>Делитесь своими астрофотографиями, снимками космических объектов и небесных явлений</p>
+                    </div>
+                    
+                    <div class="feature-card">
+                        <div class="feature-icon">
+                            <i class="fas fa-book"></i>
+                        </div>
+                        <h3>Публиковать статьи</h3>
+                        <p>Пишите научные статьи, обзоры и исследования по астрономии и космонавтике</p>
+                    </div>
+                    
+                    <div class="feature-card">
+                        <div class="feature-icon">
+                            <i class="fas fa-users"></i>
+                        </div>
+                        <h3>Общаться с единомышленниками</h3>
+                        <p>Находите коллег, обсуждайте новости науки и планируйте совместные проекты</p>
+                    </div>
+                    
+                    <div class="feature-card">
+                        <div class="feature-icon">
+                            <i class="fas fa-calendar"></i>
+                        </div>
+                        <h3>Следить за событиями</h3>
+                        <p>Узнавайте о предстоящих астрономических событиях, запусках ракет и научных конференциях</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Фотогалерея -->
+    <section id="gallery">
+        <div class="container">
+            <h2>Космическая фотогалерея</h2>
+            <p class="text-center">Лучшие фотографии, сделанные нашими пользователями</p>
+            
+            <div class="gallery">
+                <!-- Фото 1 -->
+                <div class="photo-card">
+                    <div class="photo-image" style="background-image: url('https://images.unsplash.com/photo-1462331940025-496dfbfc7564?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80');"></div>
+                    <div class="photo-info">
+                        <h3 class="photo-title">Туманность Ориона</h3>
+                        <div class="photo-author">
+                            <i class="fas fa-user"></i> Иван Петров
+                        </div>
+                        <p>Снимок сделан с телескопа Celestron 8SE, выдержка 120 секунд</p>
+                    </div>
+                </div>
+                
+                <!-- Фото 2 -->
+                <div class="photo-card">
+                    <div class="photo-image" style="background-image: url('https://images.unsplash.com/photo-1454789548928-9efd52dc4031?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80');"></div>
+                    <div class="photo-info">
+                        <h3 class="photo-title">Млечный путь над горами</h3>
+                        <div class="photo-author">
+                            <i class="fas fa-user"></i> Елена Смирнова
+                        </div>
+                        <p>Съемка в Альпах, камера Sony A7III, объектив 24mm f/1.4</p>
+                    </div>
+                </div>
+                
+                <!-- Фото 3 -->
+                <div class="photo-card">
+                    <div class="photo-image" style="background-image: url('https://images.unsplash.com/photo-1505506874110-6a7a69069a08?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80');"></div>
+                    <div class="photo-info">
+                        <h3 class="photo-title">Лунный кратер Тихо</h3>
+                        <div class="photo-author">
+                            <i class="fas fa-user"></i> Алексей Козлов
+                        </div>
+                        <p>Телескоп Sky-Watcher 150/750, камера ZWO ASI 120MC</p>
+                    </div>
+                </div>
+                
+                <!-- Фото 4 -->
+                <div class="photo-card">
+                    <div class="photo-image" style="background-image: url('https://images.unsplash.com/photo-1502136969935-8d8eef54d77b?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80');"></div>
+                    <div class="photo-info">
+                        <h3 class="photo-title">Солнечное затмение</h3>
+                        <div class="photo-author">
+                            <i class="fas fa-user"></i> Михаил Волков
+                        </div>
+                        <p>Съемка в Чили во время полного солнечного затмения 2020 года</p>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="text-center" style="margin-top: 40px;">
+                <a href="#gallery" class="btn">Смотреть все фотографии</a>
+            </div>
+        </div>
+    </section>
+
+    <!-- Статьи -->
+    <section id="articles">
+        <div class="container">
+            <h2>Научные статьи</h2>
+            <p class="text-center">Последние публикации наших авторов</p>
+            
+            <div class="articles-grid">
+                <!-- Статья 1 -->
+                <div class="article-card">
+                    <div class="article-image" style="background-image: url('https://images.unsplash.com/photo-1464802686167-b939a6910659?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80');"></div>
+                    <div class="article-content">
+                        <h3 class="article-title">Тайны темной материи</h3>
+                        <p class="article-excerpt">Исследование современных теорий о природе темной материи и ее влиянии на формирование галактик...</p>
+                        <div class="article-meta">
+                            <span><i class="fas fa-user"></i> Дмитрий Соколов</span>
+                            <span><i class="fas fa-calendar"></i> 12 мая 2023</span>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Статья 2 -->
+                <div class="article-card">
+                    <div class="article-image" style="background-image: url('https://images.unsplash.com/photo-1506443432602-ac2fcd6f54e0?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80');"></div>
+                    <div class="article-content">
+                        <h3 class="article-title">Колонизация Марса: мифы и реальность</h3>
+                        <p class="article-excerpt">Анализ технологических и биологических проблем, связанных с созданием поселений на Красной планете...</p>
+                        <div class="article-meta">
+                            <span><i class="fas fa-user"></i> Анна Кузнецова</span>
+                            <span><i class="fas fa-calendar"></i> 28 апреля 2023</span>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Статья 3 -->
+                <div class="article-card">
+                    <div class="article-image" style="background-image: url('https://images.unsplash.com/photo-1534447677768-be436bb09401?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80');"></div>
+                    <div class="article-content">
+                        <h3 class="article-title">Экзопланеты: поиск второй Земли</h3>
+                        <p class="article-excerpt">Обзор последних открытий экзопланет и методов поиска потенциально обитаемых миров за пределами Солнечной системы...</p>
+                        <div class="article-meta">
+                            <span><i class="fas fa-user"></i> Сергей Иванов</span>
+                            <span><i class="fas fa-calendar"></i> 15 апреля 2023</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="text-center" style="margin-top: 40px;">
+                <a href="#articles" class="btn">Читать все статьи</a>
+            </div>
+        </div>
+    </section>
+
+    <!-- Загрузка материалов -->
+    <section id="upload">
+        <div class="container">
+            <h2>Поделитесь своими материалами</h2>
+            <p class="text-center">Загрузите фотографии или статьи, чтобы поделиться с сообществом</p>
+            
+            <div class="tabs">
+                <div class="tab-btn active" data-tab="photo">Загрузить фото</div>
+                <div class="tab-btn" data-tab="article">Загрузить статью</div>
+            </div>
+            
+            <div class="tab-content active" id="photo-tab">
+                <div class="upload-section">
+                    <form id="photo-form">
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label for="photo-title">Название фотографии</label>
+                                <input type="text" id="photo-title" class="form-control" placeholder="Например: Галактика Андромеды">
+                            </div>
+                            <div class="form-group">
+                                <label for="photo-author">Ваше имя</label>
+                                <input type="text" id="photo-author" class="form-control" placeholder="Имя автора">
+                            </div>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="photo-description">Описание фотографии</label>
+                            <textarea id="photo-description" class="form-control" placeholder="Опишите объект съемки, оборудование, параметры съемки..."></textarea>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="photo-file">Выберите файл изображения</label>
+                            <input type="file" id="photo-file" class="form-control" accept="image/*">
+                        </div>
+                        
+                        <button type="submit" class="btn">Загрузить фотографию</button>
+                    </form>
+                </div>
+            </div>
+            
+            <div class="tab-content" id="article-tab">
+                <div class="upload-section">
+                    <form id="article-form">
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label for="article-title">Заголовок статьи</label>
+                                <input type="text" id="article-title" class="form-control" placeholder="Например: Черные дыры и их свойства">
+                            </div>
+                            <div class="form-group">
+                                <label for="article-author">Ваше имя</label>
+                                <input type="text" id="article-author" class="form-control" placeholder="Имя автора">
+                            </div>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="article-content">Текст статьи</label>
+                            <textarea id="article-content" class="form-control" placeholder="Напишите вашу статью здесь..."></textarea>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="article-image">Изображение для статьи (опционально)</label>
+                            <input type="file" id="article-image" class="form-control" accept="image/*">
+                        </div>
+                        
+                        <button type="submit" class="btn">Опубликовать статью</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Контакты -->
+    <section id="contact">
+        <div class="container">
+            <h2>Наши контакты</h2>
+            <p class="text-center">Свяжитесь с нами для сотрудничества или получения информации</p>
+            
+            <div class="upload-section">
+                <div class="form-row">
+                    <div class="form-group">
+                        <h3><i class="fas fa-envelope"></i> Email</h3>
+                        <p>info@cosmic-portal.ru</p>
+                    </div>
+                    
+                    <div class="form-group">
+                        <h3><i class="fas fa-phone"></i> Телефон</h3>
+                        <p>+7 (495) 123-45-67</p>
+                    </div>
+                    
+                    <div class="form-group">
+                        <h3><i class="fas fa-map-marker-alt"></i> Адрес</h3>
+                        <p>Москва, ул. Астрономическая, д. 15</p>
+                    </div>
+                </div>
+                
+                <div class="form-group">
+                    <h3>Оставьте сообщение</h3>
+                    <textarea class="form-control" placeholder="Ваше сообщение..." style="height: 120px;"></textarea>
+                    <button type="submit" class="btn" style="margin-top: 20px;">Отправить сообщение</button>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Подвал сайта -->
+    <footer>
+        <div class="container">
+            <div class="logo" style="font-size: 2rem; margin-bottom: 20px;">
+                <i class="fas fa-rocket"></i>
+                <span>Космический портал</span>
+            </div>
+            <p>Крупнейшее сообщество любителей астрономии и космонавтики</p>
+            
+            <div class="social-links">
+                <a href="#"><i class="fab fa-vk"></i></a>
+                <a href="#"><i class="fab fa-telegram"></i></a>
+                <a href="#"><i class="fab fa-youtube"></i></a>
+                <a href="#"><i class="fab fa-instagram"></i></a>
+                <a href="#"><i class="fab fa-github"></i></a>
+            </div>
+            
+            <div class="copyright">
+                <p>&copy; 2023 Космический портал. Все права защищены.</p>
+                <p>Сайт разработан с использованием HTML, CSS и JavaScript</p>
+            </div>
+        </div>
+    </footer>
+    
+    <!-- Модальное окно успешной загрузки -->
+    <div class="modal" id="success-modal">
+        <div class="modal-content">
+            <span class="close-modal">&times;</span>
+            <h2 class="modal-title">Успешно!</h2>
+            <p style="text-align: center; font-size: 1.2rem;">Ваши материалы успешно загружены и отправлены на модерацию.</p>
+            <p style="text-align: center; margin-top: 20px;">После проверки модератором они появятся на сайте.</p>
+            <div style="text-align: center; margin-top: 30px;">
+                <button class="btn" id="modal-ok">Хорошо</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- JavaScript -->
+    <script>
+        // Когда документ загружен
+        document.addEventListener('DOMContentLoaded', function() {
+            // Создание звездного фона
+            function createStars() {
+                const starsContainer = document.getElementById('stars');
+                const starsCount = 150;
+                
+                for (let i = 0; i < starsCount; i++) {
+                    const star = document.createElement('div');
+                    star.classList.add('star');
+                    
+                    // Случайные параметры звезды
+                    const size = Math.random() * 3;
+                    const posX = Math.random() * 100;
+                    const posY = Math.random() * 100;
+                    const duration = 2 + Math.random() * 5;
+                    
+                    star.style.width = `${size}px`;
+                    star.style.height = `${size}px`;
+                    star.style.left = `${posX}%`;
+                    star.style.top = `${posY}%`;
+                    star.style.setProperty('--duration', `${duration}s`);
+                    
+                    starsContainer.appendChild(star);
+                }
+            }
+            
+            // Переключение мобильного меню
+            const menuToggle = document.querySelector('.menu-toggle');
+            const navMenu = document.querySelector('nav ul');
+            
+            menuToggle.addEventListener('click', function() {
+                navMenu.classList.toggle('show');
+            });
+            
+            // Плавная прокрутка для навигационных ссылок
+            document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+                anchor.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    
+                    const targetId = this.getAttribute('href');
+                    const targetElement = document.querySelector(targetId);
+                    
+                    window.scrollTo({
+                        top: targetElement.offsetTop - 80,
+                        behavior: 'smooth'
+                    });
+                    
+                    // Закрываем меню на мобильных устройствах после клика
+                    if (window.innerWidth <= 768) {
+                        navMenu.classList.remove('show');
+                    }
+                });
+            });
+            
+            // Переключение вкладок
+            const tabBtns = document.querySelectorAll('.tab-btn');
+            tabBtns.forEach(btn => {
+                btn.addEventListener('click', function() {
+                    // Удаляем активный класс у всех кнопок
+                    tabBtns.forEach(b => b.classList.remove('active'));
+                    
+                    // Добавляем активный класс текущей кнопке
+                    this.classList.add('active');
+                    
+                    // Скрываем все вкладки
+                    document.querySelectorAll('.tab-content').forEach(tab => {
+                        tab.classList.remove('active');
+                    });
+                    
+                    // Показываем выбранную вкладку
+                    const tabId = this.getAttribute('data-tab');
+                    document.getElementById(`${tabId}-tab`).classList.add('active');
+                });
+            });
+            
+            // Обработка отправки форм
+            const photoForm = document.getElementById('photo-form');
+            const articleForm = document.getElementById('article-form');
+            const successModal = document.getElementById('success-modal');
+            const closeModal = document.querySelector('.close-modal');
+            const modalOk = document.getElementById('modal-ok');
+            
+            function showModal() {
+                successModal.style.display = 'flex';
+            }
+            
+            function hideModal() {
+                successModal.style.display = 'none';
+            }
+            
+            photoForm.addEventListener('submit', function(e) {
+                e.preventDefault();
+                showModal();
+                this.reset();
+            });
+            
+            articleForm.addEventListener('submit', function(e) {
+                e.preventDefault();
+                showModal();
+                this.reset();
+            });
+            
+            closeModal.addEventListener('click', hideModal);
+            modalOk.addEventListener('click', hideModal);
+            
+            // Закрытие модального окна при клике вне его
+            window.addEventListener('click', function(e) {
+                if (e.target === successModal) {
+                    hideModal();
+                }
+            });
+            
+            // Инициализация звездного фона
+            createStars();
+            
+            // Динамическое изменение фона шапки при скролле
+            window.addEventListener('scroll', function() {
+                const header = document.querySelector('header');
+                if (window.scrollY > 50) {
+                    header.style.boxShadow = '0 5px 20px rgba(0, 0, 0, 0.5)';
+                    header.style.background = 'rgba(11, 13, 33, 0.98)';
+                } else {
+                    header.style.boxShadow = '0 2px 10px rgba(0, 0, 0, 0.1)';
+                    header.style.background = 'rgba(11, 13, 33, 0.95)';
+                }
+            });
+        });
+    </script>
+</body>
+</html>
