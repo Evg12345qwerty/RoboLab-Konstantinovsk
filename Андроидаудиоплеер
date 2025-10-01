@@ -1,0 +1,606 @@
+import pygame
+import os
+import time
+import glob
+
+# Инициализация Pygame
+pygame.init()
+pygame.mixer.init()
+
+# Создаем окно
+screen_width, screen_height = 800, 600
+screen = pygame.display.set_mode((screen_width, screen_height))
+pygame.display.set_caption("Музыкальный плеер")
+
+# Цвета
+WHITE = (255, 255, 255)
+BLACK = (0, 0, 0)
+GRAY = (200, 200, 200)
+LIGHT_GRAY = (230, 230, 230)
+DARK_GRAY = (100, 100, 100)
+BLUE = (70, 130, 180)
+LIGHT_BLUE = (100, 160, 210)
+RED = (220, 80, 80)
+GREEN = (80, 180, 80)
+YELLOW = (255, 255, 0)
+PURPLE = (180, 100, 200)
+
+# Шрифты
+font = pygame.font.Font(None, 32)
+small_font = pygame.font.Font(None, 24)
+file_font = pygame.font.Font(None, 20)
+
+class Button:
+    def __init__(self, x, y, width, height, text, color, hover_color, text_color=BLACK):
+        self.rect = pygame.Rect(x, y, width, height)
+        self.text = text
+        self.color = color
+        self.hover_color = hover_color
+        self.text_color = text_color
+        self.current_color = color
+        self.is_hovered = False
+        
+    def draw(self, surface):
+        pygame.draw.rect(surface, self.current_color, self.rect, border_radius=8)
+        pygame.draw.rect(surface, DARK_GRAY, self.rect, 2, border_radius=8)
+        
+        text_surf = small_font.render(self.text, True, self.text_color)
+        text_rect = text_surf.get_rect(center=self.rect.center)
+        surface.blit(text_surf, text_rect)
+        
+    def check_hover(self, pos):
+        self.is_hovered = self.rect.collidepoint(pos)
+        self.current_color = self.hover_color if self.is_hovered else self.color
+        return self.is_hovered
+        
+    def is_clicked(self, pos, event):
+        if event.type == pygame.MOUSEBUTTONDOWN and event.button == 1:
+            return self.rect.collidepoint(pos)
+        return False
+
+class FileBrowser:
+    def __init__(self, x, y, width, height):
+        self.rect = pygame.Rect(x, y, width, height)
+        self.files = []
+        self.directories = []
+        self.selected_index = -1
+        self.scroll_offset = 0
+        self.item_height = 30
+        self.current_path = "/storage/emulated/0/"
+        self.is_visible = False
+        
+    def scan_directory(self, path):
+        """Сканирует указанную директорию"""
+        try:
+            if not os.path.exists(path):
+                return False
+                
+            self.current_path = path
+            self.files = []
+            self.directories = []
+            
+            # Получаем список элементов в директории
+            for item in os.listdir(path):
+                full_path = os.path.join(path, item)
+                if os.path.isdir(full_path):
+                    self.directories.append(f"📁 {item}")
+                elif item.lower().endswith(('.mp3', '.wav', '.ogg', '.m4a', '.flac')):
+                    self.files.append(f"🎵 {item}")
+                    
+            # Сортируем: сначала папки, потом файлы
+            self.directories.sort()
+            self.files.sort()
+            
+            return True
+        except PermissionError:
+            print(f"Нет доступа к папке: {path}")
+            return False
+        except Exception as e:
+            print(f"Ошибка сканирования: {e}")
+            return False
+        
+    def draw(self, surface):
+        if not self.is_visible:
+            return
+            
+        # Фон браузера
+        pygame.draw.rect(surface, WHITE, self.rect)
+        pygame.draw.rect(surface, BLUE, self.rect, 3, border_radius=5)
+        
+        # Заголовок
+        title_rect = pygame.Rect(self.rect.x, self.rect.y, self.rect.width, 40)
+        pygame.draw.rect(surface, LIGHT_BLUE, title_rect)
+        title_text = font.render(f"Папка: {self.current_path}", True, BLACK)
+        surface.blit(title_text, (title_rect.x + 10, title_rect.y + 10))
+        
+        # Список файлов и папок
+        content_rect = pygame.Rect(self.rect.x + 5, self.rect.y + 45, self.rect.width - 10, self.rect.height - 90)
+        pygame.draw.rect(surface, LIGHT_GRAY, content_rect)
+        pygame.draw.rect(surface, DARK_GRAY, content_rect, 1)
+        
+        # Отображение элементов
+        all_items = self.directories + self.files
+        visible_items = (content_rect.height - 4) // self.item_height
+        start_index = self.scroll_offset
+        end_index = min(start_index + visible_items, len(all_items))
+        
+        for i in range(start_index, end_index):
+            item_rect = pygame.Rect(
+                content_rect.x + 2,
+                content_rect.y + 2 + (i - start_index) * self.item_height,
+                content_rect.width - 4,
+                self.item_height - 2
+            )
+            
+            # Выделение выбранного элемента
+            if i == self.selected_index:
+                pygame.draw.rect(surface, LIGHT_BLUE, item_rect)
+            
+            # Отображение имени
+            item_text = file_font.render(all_items[i], True, BLACK)
+            text_rect = item_text.get_rect(midleft=(item_rect.x + 5, item_rect.centery))
+            surface.blit(item_text, text_rect)
+            
+            # Обводка элемента
+            pygame.draw.rect(surface, GRAY, item_rect, 1)
+        
+        # Кнопки
+        button_width = 120
+        button_margin = 10
+        
+        # Кнопка выбора
+        select_button = Button(
+            self.rect.x + button_margin,
+            self.rect.bottom - 35,
+            button_width, 30,
+            "Выбрать", GREEN, LIGHT_GRAY
+        )
+        
+        # Кнопка отмены
+        cancel_button = Button(
+            self.rect.x + button_margin * 2 + button_width,
+            self.rect.bottom - 35,
+            button_width, 30,
+            "Отмена", RED, LIGHT_GRAY
+        )
+        
+        # Кнопка наверх
+        up_button = Button(
+            self.rect.x + button_margin * 3 + button_width * 2,
+            self.rect.bottom - 35,
+            button_width, 30,
+            "Наверх", YELLOW, LIGHT_GRAY
+        )
+        
+        select_button.draw(surface)
+        cancel_button.draw(surface)
+        up_button.draw(surface)
+        
+        return select_button, cancel_button, up_button
+    
+    def handle_event(self, event, pos):
+        if not self.is_visible:
+            return None, False, False, False
+            
+        select_button, cancel_button, up_button = None, None, None
+        
+        # Получаем кнопки для проверки кликов
+        button_width = 120
+        button_margin = 10
+        
+        select_button_rect = pygame.Rect(
+            self.rect.x + button_margin,
+            self.rect.bottom - 35,
+            button_width, 30
+        )
+        
+        cancel_button_rect = pygame.Rect(
+            self.rect.x + button_margin * 2 + button_width,
+            self.rect.bottom - 35,
+            button_width, 30
+        )
+        
+        up_button_rect = pygame.Rect(
+            self.rect.x + button_margin * 3 + button_width * 2,
+            self.rect.bottom - 35,
+            button_width, 30
+        )
+        
+        content_rect = pygame.Rect(self.rect.x + 5, self.rect.y + 45, self.rect.width - 10, self.rect.height - 90)
+        
+        if event.type == pygame.MOUSEBUTTONDOWN and event.button == 1:
+            # Проверка клика по элементам списка
+            if content_rect.collidepoint(pos):
+                relative_y = pos[1] - content_rect.y - 2
+                item_index = (relative_y // self.item_height) + self.scroll_offset
+                all_items = self.directories + self.files
+                
+                if 0 <= item_index < len(all_items):
+                    self.selected_index = item_index
+                    
+                    # Если кликнули по папке - переходим в нее
+                    if item_index < len(self.directories):
+                        folder_name = all_items[item_index][2:]  # Убираем эмодзи
+                        new_path = os.path.join(self.current_path, folder_name)
+                        self.scan_directory(new_path)
+                        self.selected_index = -1
+                        self.scroll_offset = 0
+                    
+                    return None, False, False, True
+                        
+            # Проверка кнопок
+            elif select_button_rect.collidepoint(pos):
+                if self.selected_index >= 0:
+                    all_items = self.directories + self.files
+                    selected_item = all_items[self.selected_index][2:]  # Убираем эмодзи
+                    full_path = os.path.join(self.current_path, selected_item)
+                    return full_path, True, False, True
+                    
+            elif cancel_button_rect.collidepoint(pos):
+                return None, False, True, True
+                
+            elif up_button_rect.collidepoint(pos):
+                # Переход на уровень выше
+                parent_path = os.path.dirname(self.current_path)
+                if parent_path != self.current_path:  # Проверяем, что не остались в той же папке
+                    self.scan_directory(parent_path)
+                    self.selected_index = -1
+                    self.scroll_offset = 0
+                return None, False, False, True
+                
+        elif event.type == pygame.MOUSEBUTTONDOWN:
+            if event.button == 4:  # Колесо мыши вверх
+                self.scroll_offset = max(0, self.scroll_offset - 1)
+                return None, False, False, True
+            elif event.button == 5:  # Колесо мыши вниз
+                visible_items = (content_rect.height - 4) // self.item_height
+                all_items = self.directories + self.files
+                self.scroll_offset = min(len(all_items) - visible_items, self.scroll_offset + 1)
+                return None, False, False, True
+                
+        return None, False, False, False
+
+class ProgressBar:
+    def __init__(self, x, y, width, height):
+        self.rect = pygame.Rect(x, y, width, height)
+        self.progress = 0
+        self.dragging = False
+        self.track_length = 0
+        self.current_time = 0
+        
+    def set_track_length(self, length):
+        self.track_length = length
+        
+    def update_progress(self, current_time):
+        if self.track_length > 0 and not self.dragging:
+            self.current_time = current_time
+            self.progress = current_time / self.track_length
+            
+    def get_time_from_progress(self):
+        return int(self.progress * self.track_length)
+        
+    def draw(self, surface):
+        # Фон полосы
+        pygame.draw.rect(surface, LIGHT_GRAY, self.rect, border_radius=3)
+        
+        # Прогресс
+        progress_width = int(self.rect.width * self.progress)
+        if progress_width > 0:
+            progress_rect = pygame.Rect(self.rect.x, self.rect.y, progress_width, self.rect.height)
+            pygame.draw.rect(surface, BLUE, progress_rect, border_radius=3)
+        
+        # Обводка
+        pygame.draw.rect(surface, DARK_GRAY, self.rect, 2, border_radius=3)
+        
+        # Ползунок
+        slider_x = self.rect.x + int(self.rect.width * self.progress)
+        slider_rect = pygame.Rect(slider_x - 6, self.rect.y - 5, 12, self.rect.height + 10)
+        pygame.draw.rect(surface, WHITE, slider_rect, border_radius=6)
+        pygame.draw.rect(surface, DARK_GRAY, slider_rect, 2, border_radius=6)
+        
+    def check_drag(self, pos, event):
+        slider_x = self.rect.x + int(self.rect.width * self.progress)
+        slider_rect = pygame.Rect(slider_x - 10, self.rect.y - 10, 20, self.rect.height + 20)
+        
+        if event.type == pygame.MOUSEBUTTONDOWN and event.button == 1:
+            if slider_rect.collidepoint(pos) or self.rect.collidepoint(pos):
+                self.dragging = True
+                self.update_progress_from_pos(pos)
+                return True
+                
+        elif event.type == pygame.MOUSEBUTTONUP and event.button == 1:
+            if self.dragging:
+                self.dragging = False
+                return True
+                
+        elif event.type == pygame.MOUSEMOTION and self.dragging:
+            self.update_progress_from_pos(pos)
+            return True
+            
+        return False
+        
+    def update_progress_from_pos(self, pos):
+        relative_x = max(0, min(pos[0] - self.rect.x, self.rect.width))
+        self.progress = relative_x / self.rect.width
+        self.current_time = self.get_time_from_progress()
+
+class VolumeSlider:
+    def __init__(self, x, y, width, height):
+        self.rect = pygame.Rect(x, y, width, height)
+        self.volume = 0.7
+        self.dragging = False
+        
+    def draw(self, surface):
+        # Фон полосы
+        pygame.draw.rect(surface, LIGHT_GRAY, self.rect, border_radius=3)
+        
+        # Уровень громкости
+        volume_width = int(self.rect.width * self.volume)
+        if volume_width > 0:
+            volume_rect = pygame.Rect(self.rect.x, self.rect.y, volume_width, self.rect.height)
+            pygame.draw.rect(surface, GREEN, volume_rect, border_radius=3)
+        
+        # Обводка
+        pygame.draw.rect(surface, DARK_GRAY, self.rect, 2, border_radius=3)
+        
+        # Ползунок
+        slider_x = self.rect.x + int(self.rect.width * self.volume)
+        slider_rect = pygame.Rect(slider_x - 4, self.rect.y - 3, 8, self.rect.height + 6)
+        pygame.draw.rect(surface, WHITE, slider_rect, border_radius=4)
+        pygame.draw.rect(surface, DARK_GRAY, slider_rect, 1, border_radius=4)
+        
+    def check_drag(self, pos, event):
+        slider_x = self.rect.x + int(self.rect.width * self.volume)
+        slider_rect = pygame.Rect(slider_x - 8, self.rect.y - 8, 16, self.rect.height + 16)
+        
+        if event.type == pygame.MOUSEBUTTONDOWN and event.button == 1:
+            if slider_rect.collidepoint(pos) or self.rect.collidepoint(pos):
+                self.dragging = True
+                self.update_volume(pos)
+                return True
+                
+        elif event.type == pygame.MOUSEBUTTONUP and event.button == 1:
+            self.dragging = False
+            
+        elif event.type == pygame.MOUSEMOTION and self.dragging:
+            self.update_volume(pos)
+            return True
+            
+        return False
+        
+    def update_volume(self, pos):
+        relative_x = max(0, min(pos[0] - self.rect.x, self.rect.width))
+        self.volume = relative_x / self.rect.width
+        pygame.mixer.music.set_volume(self.volume)
+
+def format_time(seconds):
+    minutes = int(seconds // 60)
+    seconds = int(seconds % 60)
+    return f"{minutes:02d}:{seconds:02d}"
+
+class MusicPlayer:
+    def __init__(self):
+        self.start_time = 0
+        self.paused_time = 0
+        self.is_playing = False
+        self.is_paused = False
+        self.track_length = 0
+        self.current_file = ""
+        
+    def load_file(self, file_path):
+        if os.path.exists(file_path):
+            try:
+                pygame.mixer.music.load(file_path)
+                self.current_file = file_path
+                # Для демонстрации устанавливаем длину трека 3:45
+                self.track_length = 225
+                return True
+            except Exception as e:
+                print(f"Ошибка загрузки файла: {e}")
+                return False
+        return False
+        
+    def play(self):
+        if self.current_file and not self.is_playing:
+            pygame.mixer.music.play(-1)
+            self.start_time = time.time() - self.paused_time
+            self.is_playing = True
+            self.is_paused = False
+        elif self.is_paused:
+            pygame.mixer.music.unpause()
+            self.start_time = time.time() - self.paused_time
+            self.is_paused = False
+            
+    def pause(self):
+        if self.is_playing and not self.is_paused:
+            pygame.mixer.music.pause()
+            self.paused_time = self.get_current_time()
+            self.is_paused = True
+            
+    def stop(self):
+        pygame.mixer.music.stop()
+        self.is_playing = False
+        self.is_paused = False
+        self.paused_time = 0
+        self.start_time = 0
+        
+    def get_current_time(self):
+        if not self.is_playing:
+            return self.paused_time
+        elif self.is_paused:
+            return self.paused_time
+        else:
+            current = time.time() - self.start_time
+            return min(current, self.track_length)
+            
+    def seek(self, position):
+        if self.is_playing:
+            self.start_time = time.time() - position
+            # Перезапускаем для перемотки
+            pygame.mixer.music.play(-1)
+        else:
+            self.paused_time = position
+
+def main():
+    # Создаем элементы интерфейса
+    progress_bar = ProgressBar(50, 450, 700, 20)
+    volume_slider = VolumeSlider(650, 400, 100, 15)
+    
+    # Кнопки управления
+    play_button = Button(300, 500, 80, 40, "▶", GREEN, LIGHT_GRAY)
+    pause_button = Button(400, 500, 80, 40, "⏸", BLUE, LIGHT_GRAY)
+    stop_button = Button(500, 500, 80, 40, "⏹", RED, LIGHT_GRAY)
+    
+    # Кнопка выбора файлов
+    browse_button = Button(50, 400, 200, 40, "📁 Выбрать трек", PURPLE, LIGHT_GRAY)
+    
+    # Создаем браузер файлов
+    file_browser = FileBrowser(100, 100, 600, 400)
+    file_browser.scan_directory("/storage/emulated/0/")
+    
+    # Создаем плеер
+    player = MusicPlayer()
+    
+    running = True
+    clock = pygame.time.Clock()
+    
+    print("Музыкальный плеер запущен!")
+    print("Нажмите 'Выбрать трек' для открытия файлового браузера")
+    
+    while running:
+        mouse_pos = pygame.mouse.get_pos()
+        
+        for event in pygame.event.get():
+            if event.type == pygame.QUIT:
+                running = False
+                
+            # Обработка браузера файлов
+            if file_browser.is_visible:
+                selected_file, file_selected, cancel_clicked, browser_handled = file_browser.handle_event(event, mouse_pos)
+                
+                if file_selected and selected_file:
+                    if player.load_file(selected_file):
+                        print(f"Загружен файл: {os.path.basename(selected_file)}")
+                        progress_bar.set_track_length(player.track_length)
+                        player.play()
+                        file_browser.is_visible = False
+                
+                elif cancel_clicked:
+                    file_browser.is_visible = False
+                    
+            else:
+                # Обработка кнопок только если браузер не виден
+                if browse_button.is_clicked(mouse_pos, event):
+                    file_browser.is_visible = True
+                    file_browser.scan_directory("/storage/emulated/0/")
+                    
+                elif play_button.is_clicked(mouse_pos, event):
+                    if player.current_file:
+                        player.play()
+                        
+                elif pause_button.is_clicked(mouse_pos, event):
+                    if player.current_file:
+                        player.pause()
+                            
+                elif stop_button.is_clicked(mouse_pos, event):
+                    if player.current_file:
+                        player.stop()
+                        progress_bar.progress = 0
+                
+                # Обработка полосы прогресса
+                if progress_bar.check_drag(mouse_pos, event):
+                    if event.type == pygame.MOUSEBUTTONUP:
+                        seek_time = progress_bar.get_time_from_progress()
+                        player.seek(seek_time)
+                
+                # Обработка громкости
+                volume_slider.check_drag(mouse_pos, event)
+                
+                # Управление с клавиатуры
+                if event.type == pygame.KEYDOWN:
+                    if event.key == pygame.K_ESCAPE:
+                        running = False
+                    elif event.key == pygame.K_SPACE:
+                        if player.current_file:
+                            if player.is_paused:
+                                player.play()
+                            else:
+                                player.pause()
+                    elif event.key == pygame.K_b:  # Hotkey для браузера
+                        file_browser.is_visible = True
+                        file_browser.scan_directory("/storage/emulated/0/")
+        
+        # Обновление прогресса
+        if player.current_file:
+            current_time = player.get_current_time()
+            progress_bar.update_progress(current_time)
+        
+        # Обновление состояния кнопок
+        play_button.check_hover(mouse_pos)
+        pause_button.check_hover(mouse_pos)
+        stop_button.check_hover(mouse_pos)
+        browse_button.check_hover(mouse_pos)
+        
+        # Отрисовка
+        screen.fill(WHITE)
+        
+        # Заголовок
+        title_text = font.render("Музыкальный Плеер", True, BLACK)
+        screen.blit(title_text, (screen_width//2 - title_text.get_width()//2, 20))
+        
+        # Статус воспроизведения
+        if player.current_file:
+            if player.is_paused:
+                status = f"⏸ Пауза: {os.path.basename(player.current_file)}"
+            elif player.is_playing:
+                status = f"▶ Воспроизведение: {os.path.basename(player.current_file)}"
+            else:
+                status = f"⏹ Остановлено: {os.path.basename(player.current_file)}"
+        else:
+            status = "Выберите файл для воспроизведения"
+        
+        status_text = small_font.render(status, True, DARK_GRAY)
+        screen.blit(status_text, (50, 350))
+        
+        # Полоса прогресса
+        progress_bar.draw(screen)
+        
+        # Время
+        if player.current_file:
+            current_time = player.get_current_time()
+            current_time_str = format_time(current_time)
+            total_time_str = format_time(player.track_length)
+            time_text = small_font.render(f"{current_time_str} / {total_time_str}", True, BLACK)
+            screen.blit(time_text, (screen_width//2 - time_text.get_width()//2, 475))
+        
+        # Кнопки управления
+        play_button.draw(screen)
+        pause_button.draw(screen)
+        stop_button.draw(screen)
+        browse_button.draw(screen)
+        
+        # Громкость
+        volume_text = small_font.render("Громкость:", True, BLACK)
+        screen.blit(volume_text, (550, 395))
+        volume_slider.draw(screen)
+        
+        # Отображение уровня громкости
+        volume_percent = small_font.render(f"{int(volume_slider.volume * 100)}%", True, BLACK)
+        screen.blit(volume_percent, (760, 395))
+        
+        # Инструкция
+        instruction = small_font.render("ESC - выход | ПРОБЕЛ - пауза | B - браузер файлов", True, DARK_GRAY)
+        screen.blit(instruction, (screen_width//2 - instruction.get_width()//2, 550))
+        
+        # Отрисовка браузера файлов (поверх всего)
+        file_browser.draw(screen)
+        
+        pygame.display.flip()
+        clock.tick(60)
+    
+    # Корректное завершение
+    pygame.mixer.music.stop()
+    pygame.quit()
+
+if __name__ == "__main__":
+    main()
